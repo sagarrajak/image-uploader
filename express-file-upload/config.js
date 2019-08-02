@@ -4,5 +4,5 @@ module.exports = {
   username: '',
   password: '',
   collection_name: 'image_collection',
-  port: 3000
+  port: 3001
 }
