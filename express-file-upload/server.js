@@ -7,6 +7,7 @@ const multer = require('multer')
 const fs = require('fs-extra')
 const path = require('path')
 const morgan = require('morgan')
+const Canvas = require('canvas')
 
 const app = express()
 
@@ -56,9 +57,13 @@ app.get('/', function (_req, res) {
 app.post('/uploadphoto', upload.single('picture'), (req, res) => {
   if (req.file) {
     const img = fs.readFileSync(req.file.path)
+    const cnvImage = new Canvas.Image;
+    cnvImage.src = img;
     const encodeImage = img.toString('base64')
     const dbObject = client.db(databaseName)
     const finalImg = {
+      width: cnvImage.width,
+      hight: cnvImage.height,
       contentType: req.file.mimetype,
       image: Buffer.from(encodeImage, 'base64')
     }
@@ -71,6 +76,8 @@ app.post('/uploadphoto', upload.single('picture'), (req, res) => {
       }
       res.status = 201
       res.json({
+        width: cnvImage.width,
+        height: cnvImage.height,
         success: true,
         message: 'Added image successfully',
         id: result.ops.map((element) => element._id)
