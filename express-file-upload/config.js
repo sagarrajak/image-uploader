@@ -1,5 +1,5 @@
 module.exports = {
-  database_url: 'mongodb://root:example@localhost:27017',
+  database_url: 'mongodb://root:example@192.168.99.100:27017',
   db: 'image',
   username: '',
   password: '',

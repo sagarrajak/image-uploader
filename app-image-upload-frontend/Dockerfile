@@ -1,11 +1,6 @@
-FROM node:alpine as builder
+FROM node:lts-buster as builder
 WORKDIR $HOME/app
 COPY package.json .
 RUN npm install
 COPY . .
-RUN npm run build
-
-
-FROM nginx:alpine
-EXPOSE 80
-COPY --from=builder /app/build  /usr/share/nginx/html
+RUN npm run start

@@ -8,17 +8,3 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
-  backend:
-    build: 
-      context: ./express-file-upload
-      dockerfile: Dockerfile
-    environment:
-      NODE_ENV: development
-    ports:
-      - 3000:3000 
-  frontend:
-    build: 
-      context: ./app-image-upload-frontend
-      dockerfile: Dockerfile
-    ports:
-      - "80:80"    
