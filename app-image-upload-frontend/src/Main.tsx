@@ -11,7 +11,16 @@ const styles = (theme: Theme) =>
       margin: theme.spacing(2),
     },
     image: {
-      maxHeight: "256px"
+      [theme.breakpoints.down('sm')]: {
+        maxWidth: (window.innerWidth-50)+'px !important',
+      },
+      [theme.breakpoints.between('sm', 'md')]: {
+        maxWidth: "512px !important",
+      },
+      [theme.breakpoints.between('md', 'lg')]: {
+        maxWidth: "1024px !important",
+      },
+      maxWidth: (window.innerWidth-50)+'px !important',
     },
     buttonStyle: {
       marginLeft: theme.spacing(2),
