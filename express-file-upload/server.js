@@ -3,21 +3,30 @@
 
 const express = require('express')
 const bodyParser = require('body-parser')
-const app = express()
 const multer = require('multer')
 const fs = require('fs-extra')
 const path = require('path')
+const morgan = require('morgan')
+
+const app = express()
+
+app.use(morgan('combined'))
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use((_req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
+app.use(morgan('combined'))
 
 const MongoClient = require('mongodb').MongoClient
 const ObjectId = require('mongodb').ObjectId
-
 const databseUrl = require('./config').database_url
 const databaseName = require('./config').db
 const collectionName = require('./config').collection_name
 const port = require('./config').port
 
-console.log(require('./config'))
 const client = new MongoClient(databseUrl)
 
 if (!fs.existsSync('uploads')) fs.mkdirSync('uploads')
@@ -48,12 +57,12 @@ app.post('/uploadphoto', upload.single('picture'), (req, res) => {
   if (req.file) {
     const img = fs.readFileSync(req.file.path)
     const encodeImage = img.toString('base64')
-    const db = client.db(databaseName)
+    const dbObject = client.db(databaseName)
     const finalImg = {
       contentType: req.file.mimetype,
       image: Buffer.from(encodeImage, 'base64')
     }
-    db.collection(collectionName).insertOne(finalImg, (err, result) => {
+    dbObject.collection(collectionName).insertOne(finalImg, (err, result) => {
       if (err) {
         res.status(500)
         res.json({
@@ -74,20 +83,26 @@ app.post('/uploadphoto', upload.single('picture'), (req, res) => {
 })
 
 app.get('/photos', (req, res) => {
-  const db = client.db(databaseName)
-  db.collection(collectionName).find().toArray((err, result) => {
+  const dbObject = client.db(databaseName)
+  dbObject.collection(collectionName).find().toArray((err, result) => {
     const imgArray = result.map(element => element._id)
-    if (err) return console.log(err)
+    if (err) {
+      res.status(400)
+      res.json({ err })
+    }
     res.send(imgArray)
   })
 })
 
 app.get('/photo/:id', (req, res) => {
   const filename = req.params.id
-  const db = client.db(databaseName)
-  db.collection(collectionName).findOne({ _id: ObjectId(filename) }, (err, result) => {
-    if (err) return console.log(err)
-    res.contentType('image/jpeg')
+  const dbObject = client.db(databaseName)
+  dbObject.collection(collectionName).findOne({ _id: ObjectId(filename) }, (err, result) => {
+    if (err) {
+      res.status(400)
+      res.json({ err })
+    }
+    res.contentType(result.contentType);
     res.send(result.image.buffer)
   })
 })

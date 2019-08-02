@@ -1,5 +1,24 @@
+
+#backend
 express-file-upload/node_modules
 
-app-image-upload-frontend/node_modules
-
 express-file-upload/uploads
+
+# frontend 
+app-image-upload-frontend/node_modules
+app-image-upload-frontend/.pnp
+app-image-upload-frontend/.pnp.js
+
+app-image-upload-frontend/coverage
+
+app-image-upload-frontend/build
+
+app-image-upload-frontend/.DS_Store
+app-image-upload-frontend/.env.local
+app-image-upload-frontend/.env.development.local
+app-image-upload-frontend/.env.test.local
+app-image-upload-frontend/.env.production.local
+
+app-image-upload-frontend/npm-debug.log*
+app-image-upload-frontend/yarn-debug.log*
+app-image-upload-frontend/yarn-error.log*
